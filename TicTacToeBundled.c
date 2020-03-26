@@ -1,33 +1,19 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
 //LOADS LIBRARIES ACCORDING TO SYSTEM ARCH
 #ifdef _WIN32
-#include <windows.h>
 #define clear system("cls")
-#define sleepTime 1000
 #else
 #include <unistd.h>
 #include <ctype.h>
-#define sleepTime 1
 #define clear system("clear")
 #endif
 
 //CONSTANTS USED
 #define hturn 0
 #define mturn 1
-
-// //color constants
-// #define Black '\033[0;30m'    
-// #define Red '\033[0;31m'      
-// #define Green '\033[0;32m'    
-// #define Yellow '\033[0;33m'   
-// #define Blue '\033[0;34m'   
-// #define Purple '\033[0;35m'
-// #define Cyan '\033[0;36m' 
-// #define White '\033[0;37m'
-// #define Reset '\033[0;0m'
+#define sleepTime 1
 
 //FUNCTION DECLARATIONS
 int menu();
@@ -71,7 +57,7 @@ int main(void){
     goto startAgain;
 }
 void human(){
-    int turn,readStat;
+    int i,turn,readStat;
     char boxNo,players[2][20];
     clear;
     game_mode_frame(1);
@@ -83,7 +69,7 @@ void human(){
     startAgain: ;
     char spot[][3]={"123","456","789"};
     //--------------main game area-------------
-    for(int i=0;i<9;i++){
+    for(i=0;i<9;i++){
         clear;
         game_mode_frame(1);
         frame(spot);
@@ -122,7 +108,7 @@ void human(){
 void Bot(int mode){
     //VARIABLE DECLARATIONS AND INITIALIZATIONS
     char dec,boxNo,pos,players[2][10]={"HUMAN","MACHINE"};
-    int turn,stat;
+    int i,k,l,turn,stat;
     
     //SETTING THE TURN
     setTurn: ;
@@ -135,7 +121,7 @@ void Bot(int mode){
     dec = toupper(dec);
     turn = (dec == 'Y')?hturn:mturn;
     //SWITCHING TO PROVIDED TURN 
-    for(int i=0; i<9;i++){
+    for(i=0; i<9;i++){
         switch(turn){
             case hturn:     //HUMAN PLAYER
                 clear;
@@ -167,8 +153,8 @@ void Bot(int mode){
                             if(check_for_immediate_winning_move(spot,hturn,&boxNo)== '0')
                                 readMove(spot,boxNo,mturn);
                             else{
-                                for(int k=0;k<3;k++){
-                                    for(int l=0;l<3;l++){
+                                for(k=0;k<3;k++){
+                                    for(l=0;l<3;l++){
                                         if(spot[k][l] != 'X' && spot[k][l] != '0'){
                                             stat = 1;
                                             spot[k][l] = 'X';
@@ -219,7 +205,7 @@ void Bot(int mode){
 }
 int best_move(char (*subFrame)[3],int palo){
     char temp;
-    int score,prevScore;
+    int i,j,score,prevScore;
     if(check_winner(subFrame) == 'X')//if machine wins
             return 1;
     else if(check_winner(subFrame) == '0')//if human wins
@@ -228,8 +214,8 @@ int best_move(char (*subFrame)[3],int palo){
             return 0;
     else{
         prevScore = (palo == mturn)?-1:1;//sets score corresponding to the turn
-        for(int i=0;i<3;i++){
-            for(int j=0;j<3;j++){
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
                 if(subFrame[i][j] != 'X' && subFrame[i][j] != '0'){
                     if(palo ==  mturn){
                         temp = subFrame[i][j];
@@ -257,13 +243,13 @@ int best_move(char (*subFrame)[3],int palo){
 }
 char best_spot(char (*frame)[3]){
     char winningPosition,temp;
-    int prevScore=-10,score;
+    int i,j,prevScore=-10,score;
     //FIRST CHECK FOR IMMEDIATE WIN
     if(check_for_immediate_winning_move(frame,mturn,&winningPosition) == 'X')
         return winningPosition;
     else{//if no win then return the optimal spot
-        for(int i=0;i<3;i++){
-            for(int j=0;j<3;j++){
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
                 if(frame[i][j] != 'X' && frame[i][j] != '0'){//if current spot is not claimed
                     temp = frame[i][j];                        //store current spot value
                     frame[i][j] = 'X';                      //put X to test the score at this move
@@ -280,9 +266,10 @@ char best_spot(char (*frame)[3]){
     }
 }
 char check_for_immediate_winning_move(char (*frame)[3], int checkFor,char *spotNo){
+    int i,j;
     char temp;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
             if(frame[i][j] != 'X' && frame[i][j] != '0'){   //if there is unclaimed space
                 if(checkFor == mturn){      //if passed turn is machines
                     temp = frame[i][j];     //copies original spot no
@@ -363,20 +350,22 @@ void frame(char (*count) [3]){
     }
 }
 void line(int num){
-    for(int i=0;i<num;i++){
+    int i;
+    for(i=0;i<num;i++){
         printf("-");
     }
     printf("\n");
 }
 void space(int num){
-    for(int i=0;i<num;i++){
+    int i;
+    for(i=0;i<num;i++){
         printf(" ");
     }
 }
 int readMove(char (*temp_plane)[3],char spotNo, int palo){
-    int stat = 0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
+    int i,j,stat = 0;
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
             if(temp_plane[i][j] != 'X' && temp_plane[i][j] != '0' && temp_plane[i][j] == spotNo){
                 if(palo == hturn){
                     temp_plane[i][j] = '0';
